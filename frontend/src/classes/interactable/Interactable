@@ -1,0 +1,21 @@
+import Phaser from 'phaser';
+import PlayerController from '../PlayerController';
+import type { Interactable as InteractableAreaModel } from '../../types/CoveyTownSocket';
+
+
+export default interface Interactable {
+  id: string;
+  _scene: Phaser.Scene;
+  _isOverlapping: boolean;
+  townController?: any;
+
+  // Called when player overlaps
+  overlap(): void;
+
+  // Called when player leaves
+  leave(): void;
+
+  getModel(): InteractableAreaModel;
+
+  getBounds(): Phaser.Geom.Rectangle;
+}

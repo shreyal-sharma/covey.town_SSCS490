@@ -6,7 +6,8 @@ export type KnownInteractableTypes =
   | 'conversationArea'
   | 'viewingArea'
   | 'transporter'
-  | 'gameArea';
+  | 'gameArea'
+  | 'URLInputArea'; //task 4
 
 /**
  * A base abstract class for representing an "interactable" in the Phaser game world.
@@ -47,10 +48,11 @@ export default abstract class Interactable extends Phaser.GameObjects.Sprite {
     return this._isOverlapping;
   }
 
-  constructor(scene: TownGameScene) {
+  constructor(scene: TownGameScene, id?: string) {
     super(scene, 0, 0, 'Interactable');
     this._scene = scene;
     this.townController = scene.coveyTownController;
+    if (id) this._id = id; //task 4
     scene.physics.world.enable(this);
   }
 
@@ -62,7 +64,9 @@ export default abstract class Interactable extends Phaser.GameObjects.Sprite {
   addedToScene(): void {
     super.addedToScene();
     this.townController = (this.scene as TownGameScene).coveyTownController;
-    this._id = this.name;
+    if (!this._id) {
+      this._id = this.name;
+    }
     const sprite = this.townController.ourPlayer.gameObjects?.sprite;
     if (!sprite) {
       throw new Error('Expected player sprite created by now');
