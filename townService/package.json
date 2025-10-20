@@ -27,7 +27,7 @@
     "build:live": "concurrently \"nodemon --watch 'src/**/*.ts' --watch 'generated/routes.ts' src/Server.ts\" \"nodemon --watch 'src/' --ext ts -x tsoa spec-and-routes\"",
     "swagger": "tsoa spec",
     "format": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
     "stryker-prepare": "replace-in-file '/../../..//g' '../../../../../' src/types/CoveyTownSocket.d.ts --isRegex"
   },
   "keywords": [],
