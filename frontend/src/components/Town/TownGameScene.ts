@@ -10,6 +10,10 @@ import GameArea from './interactables/GameArea';
 import Transporter from './interactables/Transporter';
 import ViewingArea from './interactables/ViewingArea';
 
+import URLInputAreaInteractable from '../../classes/interactable/URLInputAreaInteractable'; //added for URL input area
+import URLInputAreaController from '../../classes/interactable/URLInputAreaController'; //added for URL input area
+import { URLInputAreaModel } from '../../classes/interactable/URLInputAreaModel';//added for URL input area
+
 // Still not sure what the right type is here... "Interactable" doesn't do it
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function interactableTypeForObjectType(type: string): any {
@@ -21,6 +25,8 @@ function interactableTypeForObjectType(type: string): any {
     return ViewingArea;
   } else if (type === 'GameArea') {
     return GameArea;
+  } else if (type === 'URLInputAreaInteractable') {//added for URL input area to be recognized
+    return URLInputAreaInteractable;
   } else {
     throw new Error(`Unknown object type: ${type}`);
   }
@@ -429,6 +435,46 @@ export default class TownGameScene extends Phaser.Scene {
       label,
       locationManagedByGameScene: true,
     };
+
+// Task 4 block begins
+const urlInputModel: URLInputAreaModel = {
+  id: 'url-input-1',
+  friendlyName: 'YAY Song URL',
+  url: '',
+  occupants: [],
+  type: 'URLInputArea', // Make sure this matches interactableTypeForObjectType
+};
+
+// Create the interactable and pass the scene and townController
+const urlInputAreaInteractable = new URLInputAreaInteractable(
+  this,
+  urlInputModel,
+  this.coveyTownController,
+);
+
+// Position the interactable relative to the spawn point
+urlInputAreaInteractable.setPosition(spawnPoint.x + 100, spawnPoint.y);
+
+// Add it to the Phaser scene
+this.add.existing(urlInputAreaInteractable);
+
+// Add to our local interactables array
+this._interactables.push(urlInputAreaInteractable);
+
+// Optional: trigger overlap if you want it to immediately appear as "active"
+urlInputAreaInteractable.overlap();
+
+// Optional: add debug graphics for clickable area (if needed)
+const debugGraphics = this.add.graphics();
+debugGraphics.lineStyle(2, 0xff00ff, 1);
+debugGraphics.strokeRect(
+  urlInputAreaInteractable.x - 50, // half width
+  urlInputAreaInteractable.y - 25, // half height
+  100, // width
+  50   // height
+);
+// Task 4 block ends
+
 
     this._interactables = this.getInteractables();
 
