@@ -8,21 +8,37 @@ on: # Controls when the action will run.
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-and-push-to-ghcr: #
+  build-and-push-town-service-to-ghcr: #
     # The type of runner that the job will run on
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
       - name: Build town service image
-        run: docker build -f Dockerfile.townService -t ghcr.io/${{ github.repository_owner }}/covey_town_town_service:latest .
-      - name: Build frontend image
-        run: docker build -f Dockerfile.frontend -t ghcr.io/${{ github.repository_owner }}/covey_town_frontend:latest . --build-arg NEXT_PUBLIC_TOWNS_SERVICE_URL=https://covey.dogbuilt.net
+        run: docker build -f Dockerfile.townService -t ghcr.io/cs-490-project/covey_town_town_service:latest .
       # see https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#upgrading-a-workflow-that-accesses-a-registry-using-a-personal-access-token
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push town service image
-        run: docker push ghcr.io/${{ github.repository_owner }}/covey_town_town_service:latest
+        run: docker push ghcr.io/cs-490-project/covey_town_town_service:latest
+  build-and-push-frontend-to-ghcr: #
+    # The type of runner that the job will run on
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build frontend image
+        run: docker build -f Dockerfile.frontend -t ghcr.io/cs-490-project/covey_town_frontend:latest . --build-arg NEXT_PUBLIC_TOWNS_SERVICE_URL=https://coveytownservice.dogbuilt.net
+      # see https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#upgrading-a-workflow-that-accesses-a-registry-using-a-personal-access-token
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push frontend image
-        run: docker push ghcr.io/${{ github.repository_owner }}/covey_town_frontend:latest
+        run: docker push ghcr.io/cs-490-project/covey_town_frontend:latest
