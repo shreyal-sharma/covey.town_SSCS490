@@ -10,7 +10,6 @@ RUN rm -rf node_modules
 RUN npm ci
 ENV GENERATE_SOURCEMAP false
 ENV NODE_OPTIONS --max_old_space_size=2048
-ENV NODE_ENV production
 ENV PORT 80
 EXPOSE 80
 ARG NEXT_PUBLIC_TOWNS_SERVICE_URL
