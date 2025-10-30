@@ -17,11 +17,30 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea' | 'JukeboxArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
   occupants: PlayerID[];
+}
+
+/*
+ * Type that represents a single song used by backend and frontend
+ * Add more parameters as needed
+*/
+export type Song = {
+  url: string;
+  thumbnail: string;
+  duration: number;
+  title: string;
+  artist: string;
+  queuedBy?: Player;
+}
+
+export interface JukeboxArea extends Interactable {
+  songQueue: Song[];
+  elapsedTimeSec: number;
+  timeWhenLastAreaUpdateWasSent: number;
 }
 
 export type TownSettingsUpdate = {
@@ -216,7 +235,8 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand
+| JukeboxAreaUpdateCommand | SearchSongCommand | QueueSongCommand | InitiateSongSkipVoteCommand | VoteForSongSkipCommand;
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
@@ -236,6 +256,35 @@ export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
   gameID: GameInstanceID;
   move: MoveType;
+}
+export interface JukeboxAreaUpdateCommand {
+  type: 'JukeboxAreaUpdate';
+  update: JukeboxArea;
+}
+/**
+ * Will need to check for an empty search and return error
+ */
+export interface SearchSongCommand {
+  type: 'SearchSong';
+  title?: string;
+  artist?: string;
+  durationUpperBound?: number;
+  durationLowerBound?: number;
+}
+export interface QueueSongCommand {
+  type: 'QueueSong';
+  url: string;
+  player: Player;
+}
+export interface InitiateSongSkipVoteCommand {
+  type: 'InitiateSongSkipVote';
+  song: Song;
+  player: Player;
+}
+export interface VoteForSongSkipCommand {
+  type: 'VoteForSongSKip';
+  song: Song;
+  skipThisSong: boolean;
 }
 export type InteractableCommandReturnType<CommandType extends InteractableCommand> = 
   CommandType extends JoinGameCommand ? { gameID: string}:
