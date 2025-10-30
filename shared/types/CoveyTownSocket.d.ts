@@ -26,7 +26,7 @@ export interface Interactable {
 
 /*
  * Type that represents a single song used by backend and frontend
- * Add more parameters as neededs
+ * Add more parameters as needed
 */
 export type Song = {
   url: string;
