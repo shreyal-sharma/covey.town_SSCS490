@@ -68,7 +68,7 @@ describe('JukeboxAreaController', () => {
 
       expect(jukeboxArea.songQueue.length).toBe(1);
       expect(jukeboxArea.songQueue[0].url).toBe('https://example.com/song.mp3');
-      expect(jukeboxArea.songQueue[0].queuedBy).toBe(player.id);
+      expect(jukeboxArea.songQueue[0].queuedBy).toEqual(player.id);
     });
 
     it('updates elapsedTimeSec via command', () => {
@@ -120,7 +120,8 @@ describe('JukeboxAreaController', () => {
 
   describe('toModel', () => {
     it('returns the correct model with occupants as string[]', () => {
-      jukeboxArea.add(player);
+      const testPlayer = new Player('test-player-id', mock<TownEmitter>());
+      jukeboxArea.add(testPlayer);
 
       const model = jukeboxArea.toModel();
 
