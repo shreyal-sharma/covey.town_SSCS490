@@ -104,7 +104,7 @@ export default class JukeboxArea extends InteractableArea {
     return {
       url,
       thumbnail: '',
-      duration: 0,
+      duration: 30000,
       title: '',
       artist: '',
       queuedBy,
