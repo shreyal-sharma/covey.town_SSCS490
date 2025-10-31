@@ -4,6 +4,7 @@ import { BroadcastOperator } from 'socket.io';
 import InvalidParametersError from '../lib/InvalidParametersError';
 import IVideoClient from '../lib/IVideoClient';
 import Player from '../lib/Player';
+import JukeboxArea from './JukeboxAreaController'; //task 8: jukebox area addition
 import TwilioVideo from '../lib/TwilioVideo';
 import { isViewingArea } from '../TestUtils';
 import {
@@ -23,6 +24,7 @@ import ConversationArea from './ConversationArea';
 import GameAreaFactory from './games/GameAreaFactory';
 import InteractableArea from './InteractableArea';
 import ViewingArea from './ViewingArea';
+import JukeboxAreaController from './JukeboxAreaController';
 
 /**
  * The Town class implements the logic for each town: managing the various events that
@@ -411,7 +413,12 @@ export default class Town {
       .map(eachViewingAreaObject =>
         ViewingArea.fromMapObject(eachViewingAreaObject, this._broadcastEmitter),
       );
-
+      //task 8: jukebox area addition
+    const jukeboxAreas = objectLayer.objects
+      .filter(obj => obj.type === 'JukeboxArea')
+      .map(obj => JukeboxAreaController.fromMapObject(obj, this._broadcastEmitter));  
+      //end task 8
+      
     const conversationAreas = objectLayer.objects
       .filter(eachObject => eachObject.type === 'ConversationArea')
       .map(eachConvAreaObj =>
@@ -424,6 +431,7 @@ export default class Town {
 
     this._interactables = this._interactables
       .concat(viewingAreas)
+      .concat(jukeboxAreas)
       .concat(conversationAreas)
       .concat(gameAreas);
     this._validateInteractables();
