@@ -163,6 +163,48 @@ const testingMaps: TestMapDict = {
       },
     ],
   },
+  twoJukebox: {
+    tiledversion: '1.9.0',
+    tileheight: 32,
+    tilesets: [],
+    tilewidth: 32,
+    type: 'map',
+    layers: [
+      {
+        id: 4,
+        name: 'Objects',
+        objects: [
+          {
+            type: 'JukeboxArea',
+            height: 237,
+            id: 39,
+            name: 'Name1',
+            rotation: 0,
+            visible: true,
+            width: 326,
+            x: 40,
+            y: 120,
+          },
+          {
+            type: 'JukeboxArea',
+            height: 266,
+            id: 43,
+            name: 'Name2',
+            rotation: 0,
+            visible: true,
+            width: 467,
+            x: 612,
+            y: 120,
+          },
+        ],
+        opacity: 1,
+        type: 'objectgroup',
+        visible: true,
+        x: 0,
+        y: 0,
+      },
+    ],
+  },
   twoViewing: {
     tiledversion: '1.9.0',
     tileheight: 32,
@@ -813,6 +855,16 @@ describe('Town', () => {
     });
     it('Creates a ViewingArea instance for each region on the map', async () => {
       town.initializeFromMap(testingMaps.twoViewing);
+      const viewingArea1 = town.getInteractable('Name1');
+      const viewingArea2 = town.getInteractable('Name2');
+      expect(viewingArea1.id).toEqual('Name1');
+      expect(viewingArea1.boundingBox).toEqual({ x: 40, y: 120, height: 237, width: 326 });
+      expect(viewingArea2.id).toEqual('Name2');
+      expect(viewingArea2.boundingBox).toEqual({ x: 612, y: 120, height: 266, width: 467 });
+      expect(town.interactables.length).toBe(2);
+    });
+    it('Creates a JukeboxArea instance for each region on the map', async () => {
+      town.initializeFromMap(testingMaps.twoJukebox);
       const viewingArea1 = town.getInteractable('Name1');
       const viewingArea2 = town.getInteractable('Name2');
       expect(viewingArea1.id).toEqual('Name1');
