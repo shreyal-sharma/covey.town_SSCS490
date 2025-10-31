@@ -1,0 +1,166 @@
+import { mock, mockClear } from 'jest-mock-extended';
+import { nanoid } from 'nanoid';
+import { ITiledMapObject } from '@jonbell/tiled-map-type-guard';
+import Player from '../lib/Player';
+import JukeboxAreaController from './JukeboxAreaController';
+import { getLastEmittedEvent } from '../TestUtils';
+import {
+  TownEmitter,
+  JukeboxArea,
+  QueueSongCommand,
+  JukeboxAreaUpdateCommand,
+  Song,
+} from '../types/CoveyTownSocket';
+
+describe('JukeboxAreaController', () => {
+  const id = nanoid();
+  const boundingBox = { x: 100, y: 100, width: 100, height: 100 };
+  const townEmitter = mock<TownEmitter>();
+  let jukeboxArea: JukeboxAreaController;
+  let player: Player;
+
+  beforeEach(() => {
+    mockClear(townEmitter);
+
+    const jukeboxModel: JukeboxArea = {
+      id,
+      type: 'JukeboxArea',
+      songQueue: [],
+      elapsedTimeSec: 0,
+      occupants: [],
+      timeWhenLastAreaUpdateWasSent: 0,
+    };
+
+    jukeboxArea = new JukeboxAreaController(id, jukeboxModel, boundingBox, townEmitter);
+    player = new Player(nanoid(), mock<TownEmitter>());
+  });
+
+  describe('add and remove players', () => {
+    it('adds a player to occupantsByID and updates their location', () => {
+      jukeboxArea.add(player);
+      expect(jukeboxArea.occupantsByID).toEqual([player.id]);
+
+      const lastMove = getLastEmittedEvent(townEmitter, 'playerMoved');
+      expect(lastMove.location.interactableID).toEqual(id);
+    });
+
+    it('removes a player from occupantsByID and clears location', () => {
+      jukeboxArea.add(player);
+      mockClear(townEmitter);
+
+      jukeboxArea.remove(player);
+      expect(jukeboxArea.occupantsByID).toEqual([]);
+
+      const lastMove = getLastEmittedEvent(townEmitter, 'playerMoved');
+      expect(lastMove.location.interactableID).toBeUndefined();
+    });
+  });
+
+  describe('song queue management', () => {
+    it('queues a song correctly via command', () => {
+      const command: QueueSongCommand = {
+        type: 'QueueSong',
+        url: 'https://example.com/song.mp3',
+        player,
+      };
+
+      jukeboxArea.handleCommand(command, player);
+
+      expect(jukeboxArea.songQueue.length).toBeGreaterThan(0);
+      const queuedSong = jukeboxArea.songQueue[0];
+
+      expect(queuedSong.queuedBy).toBeDefined();
+      expect(queuedSong.queuedBy!.id).toEqual(player.id);
+      expect(queuedSong.url).toBe('https://example.com/song.mp3');
+    });
+
+    it('updates elapsedTimeSec via command', () => {
+      const command: JukeboxAreaUpdateCommand = {
+        type: 'JukeboxAreaUpdate',
+        update: {
+          elapsedTimeSec: 42,
+          songQueue: [],
+          id,
+          type: 'JukeboxArea',
+          occupants: [],
+          timeWhenLastAreaUpdateWasSent: 0,
+        },
+      };
+
+      jukeboxArea.handleCommand(command, player);
+
+      expect(jukeboxArea.elapsedTimeSec).toBe(42);
+    });
+
+    it('updates entire song queue via command', () => {
+      const song: Song = {
+        url: 'a',
+        queuedBy: player,
+        title: '',
+        artist: '',
+        thumbnail: '',
+        duration: 0,
+      };
+
+      const command: JukeboxAreaUpdateCommand = {
+        type: 'JukeboxAreaUpdate',
+        update: {
+          songQueue: [song],
+          elapsedTimeSec: 0,
+          id,
+          type: 'JukeboxArea',
+          occupants: [],
+          timeWhenLastAreaUpdateWasSent: 0,
+        },
+      };
+
+      jukeboxArea.handleCommand(command, player);
+
+      expect(jukeboxArea.songQueue.length).toBe(1);
+      const queuedSong = jukeboxArea.songQueue[0];
+      expect(queuedSong.queuedBy).toBeDefined();
+      expect(queuedSong.queuedBy!.id).toEqual(player.id);
+      expect(queuedSong.url).toBe('a');
+    });
+  });
+
+  describe('toModel', () => {
+    it('returns the correct model with occupants as string[]', () => {
+      const testPlayer = new Player('test-player-id', mock<TownEmitter>());
+      jukeboxArea.add(testPlayer);
+
+      const model = jukeboxArea.toModel();
+
+      expect(model.occupants).toEqual([testPlayer.id]);
+      expect(model.songQueue).toEqual(jukeboxArea.songQueue);
+      expect(model.type).toBe('JukeboxArea');
+    });
+  });
+
+  describe('fromMapObject factory', () => {
+    it('creates a JukeboxAreaController from a map object', () => {
+      const mapObject: ITiledMapObject = {
+        id: 1,
+        name: 'jukebox1',
+        type: 'JukeboxArea',
+        x: 10,
+        y: 20,
+        width: 30,
+        height: 40,
+        rotation: 0,
+        visible: true,
+        gid: undefined,
+        properties: [],
+        class: undefined,
+        template: undefined,
+      };
+
+      const area = JukeboxAreaController.fromMapObject(mapObject, townEmitter);
+
+      expect(area).toBeInstanceOf(JukeboxAreaController);
+      expect(area.toModel().id).toBe('jukebox1');
+      expect(area.toModel().occupants).toEqual([]);
+      expect(area.toModel().songQueue).toEqual([]);
+    });
+  });
+});

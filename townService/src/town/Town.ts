@@ -23,6 +23,7 @@ import ConversationArea from './ConversationArea';
 import GameAreaFactory from './games/GameAreaFactory';
 import InteractableArea from './InteractableArea';
 import ViewingArea from './ViewingArea';
+import JukeboxAreaController from './JukeboxAreaController';
 
 /**
  * The Town class implements the logic for each town: managing the various events that
@@ -412,6 +413,10 @@ export default class Town {
         ViewingArea.fromMapObject(eachViewingAreaObject, this._broadcastEmitter),
       );
 
+    const jukeboxAreas = objectLayer.objects
+      .filter(obj => obj.type === 'JukeboxArea')
+      .map(obj => JukeboxAreaController.fromMapObject(obj, this._broadcastEmitter));
+
     const conversationAreas = objectLayer.objects
       .filter(eachObject => eachObject.type === 'ConversationArea')
       .map(eachConvAreaObj =>
@@ -424,6 +429,7 @@ export default class Town {
 
     this._interactables = this._interactables
       .concat(viewingAreas)
+      .concat(jukeboxAreas)
       .concat(conversationAreas)
       .concat(gameAreas);
     this._validateInteractables();
