@@ -1,17 +1,10 @@
 import { mock, mockClear } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
-import Player from '../lib/Player';
-import JukeboxAreaController from '../town/JukeboxAreaController';
-import { defaultLocation, getLastEmittedEvent } from '../TestUtils';
-import { TownEmitter } from '../types/CoveyTownSocket';
-import {
-  JukeboxArea,
-  InteractableCommand,
-  Song,
-  ServerToClientEvents,
-  SocketData,
-} from '../types/CoveyTownSocket';
 import { ITiledMapObject } from '@jonbell/tiled-map-type-guard';
+import Player from '../lib/Player';
+import JukeboxAreaController from './JukeboxAreaController';
+import { getLastEmittedEvent } from '../TestUtils';
+import { TownEmitter, JukeboxArea, InteractableCommand } from '../types/CoveyTownSocket';
 
 describe('JukeboxAreaController', () => {
   const id = nanoid();
@@ -81,7 +74,18 @@ describe('JukeboxAreaController', () => {
     it('updates entire song queue via command', () => {
       const command: InteractableCommand = {
         type: 'JukeboxAreaUpdate',
-        update: { songQueue: [{ url: 'a', queuedBy: player.id, title: '', artist: '', thumbnail: '', duration: 0 }] },
+        update: {
+          songQueue: [
+            {
+              url: 'a',
+              queuedBy: player.id,
+              title: '',
+              artist: '',
+              thumbnail: '',
+              duration: 0,
+            },
+          ],
+        },
         interactableID: id,
         commandID: nanoid(),
       } as any;
@@ -104,20 +108,20 @@ describe('JukeboxAreaController', () => {
   describe('fromMapObject factory', () => {
     it('creates a JukeboxAreaController from a map object', () => {
       const mapObject: ITiledMapObject = {
-  id: 1,
-  name: 'jukebox1',
-  type: 'JukeboxArea',
-  x: 10,
-  y: 20,
-  width: 30,
-  height: 40,
-  rotation: 0,
-  visible: true,
-  gid: undefined,
-  properties: [],
-  class: undefined,
-  template: undefined,
-};
+        id: 1,
+        name: 'jukebox1',
+        type: 'JukeboxArea',
+        x: 10,
+        y: 20,
+        width: 30,
+        height: 40,
+        rotation: 0,
+        visible: true,
+        gid: undefined,
+        properties: [],
+        class: undefined,
+        template: undefined,
+      };
       const area = JukeboxAreaController.fromMapObject(mapObject, townEmitter);
       expect(area).toBeInstanceOf(JukeboxAreaController);
       expect(area.toModel().id).toBe('jukebox1');

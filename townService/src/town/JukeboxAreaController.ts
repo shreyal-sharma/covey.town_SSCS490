@@ -1,8 +1,10 @@
+import { BroadcastOperator } from 'socket.io';
+import { ITiledMapObject } from '@jonbell/tiled-map-type-guard';
+
 import Player from '../lib/Player';
 import InteractableArea from './InteractableArea';
-import { BroadcastOperator } from 'socket.io';
-import { TownEmitter } from '../types/CoveyTownSocket';
 import {
+  TownEmitter,
   JukeboxArea,
   InteractableCommand,
   InteractableCommandReturnType,
@@ -10,10 +12,7 @@ import {
   ServerToClientEvents,
   SocketData,
 } from '../types/CoveyTownSocket';
-import { ITiledMapObject } from '@jonbell/tiled-map-type-guard';
 
-//Controller for a JukeboxArea. Manages song queue and playback state.
- 
 export default class JukeboxAreaController extends InteractableArea {
   private _jukeboxState: JukeboxArea;
 
@@ -52,7 +51,7 @@ export default class JukeboxAreaController extends InteractableArea {
     player: Player,
   ): InteractableCommandReturnType<CommandType> {
     switch (command.type) {
-      case 'JukeboxAreaUpdate':
+      case 'JukeboxAreaUpdate': {
         if (command.update.songQueue) {
           this._jukeboxState.songQueue = command.update.songQueue;
         }
@@ -61,8 +60,9 @@ export default class JukeboxAreaController extends InteractableArea {
         }
         this._emitAreaChanged();
         return undefined as InteractableCommandReturnType<CommandType>;
+      }
 
-      case 'QueueSong':
+      case 'QueueSong': {
         const newSong: Song = {
           url: command.url,
           queuedBy: command.player,
@@ -74,32 +74,34 @@ export default class JukeboxAreaController extends InteractableArea {
         this._jukeboxState.songQueue.push(newSong);
         this._emitAreaChanged();
         return undefined as InteractableCommandReturnType<CommandType>;
+      }
 
       case 'InitiateSongSkipVote':
       case 'VoteForSongSKip':
-      case 'SearchSong':
-      
+      case 'SearchSong': {
         return undefined as InteractableCommandReturnType<CommandType>;
+      }
 
-      default:
+      default: {
         return undefined as InteractableCommandReturnType<CommandType>;
+      }
     }
   }
 
   static fromMapObject(
-  mapObject: ITiledMapObject,
-  townEmitter: TownEmitter,
-): JukeboxAreaController {
-  const { x = 0, y = 0, width = 0, height = 0, name } = mapObject;
-  const boundingBox = { x, y, width, height };
-  const jukeboxModel: JukeboxArea = {
-    id: name,
-    type: 'JukeboxArea',
-    songQueue: [],
-    elapsedTimeSec: 0,
-    occupants: [],
-    timeWhenLastAreaUpdateWasSent: 0,
-  };
-  return new JukeboxAreaController(name, jukeboxModel, boundingBox, townEmitter);
-}
+    mapObject: ITiledMapObject,
+    townEmitter: TownEmitter,
+  ): JukeboxAreaController {
+    const { x = 0, y = 0, width = 0, height = 0, name } = mapObject;
+    const boundingBox = { x, y, width, height };
+    const jukeboxModel: JukeboxArea = {
+      id: name,
+      type: 'JukeboxArea',
+      songQueue: [],
+      elapsedTimeSec: 0,
+      occupants: [],
+      timeWhenLastAreaUpdateWasSent: 0,
+    };
+    return new JukeboxAreaController(name, jukeboxModel, boundingBox, townEmitter);
+  }
 }
