@@ -23,7 +23,8 @@ export default class JukeboxAreaController extends InteractableArea {
     townEmitter: BroadcastOperator<ServerToClientEvents, SocketData>,
   ) {
     super(id, boundingBox, townEmitter);
-    this._jukeboxState = { ...jukeboxModel };
+    // Ensure songQueue is always defined
+    this._jukeboxState = { ...jukeboxModel, songQueue: jukeboxModel.songQueue ?? [] };
   }
 
   public get songQueue(): Song[] {
@@ -43,6 +44,7 @@ export default class JukeboxAreaController extends InteractableArea {
     return {
       ...this._jukeboxState,
       occupants: Object.keys(this.occupantsByID), // ensure it's a string[]
+      songQueue: this._jukeboxState.songQueue, // guaranteed to be defined
     };
   }
 
@@ -52,9 +54,7 @@ export default class JukeboxAreaController extends InteractableArea {
   ): InteractableCommandReturnType<CommandType> {
     switch (command.type) {
       case 'JukeboxAreaUpdate': {
-        if (command.update.songQueue) {
-          this._jukeboxState.songQueue = command.update.songQueue;
-        }
+        this._jukeboxState.songQueue = command.update.songQueue ?? this._jukeboxState.songQueue;
         if (typeof command.update.elapsedTimeSec === 'number') {
           this._jukeboxState.elapsedTimeSec = command.update.elapsedTimeSec;
         }
@@ -78,13 +78,9 @@ export default class JukeboxAreaController extends InteractableArea {
 
       case 'InitiateSongSkipVote':
       case 'VoteForSongSKip':
-      case 'SearchSong': {
+      case 'SearchSong':
+      default:
         return undefined as InteractableCommandReturnType<CommandType>;
-      }
-
-      default: {
-        return undefined as InteractableCommandReturnType<CommandType>;
-      }
     }
   }
 

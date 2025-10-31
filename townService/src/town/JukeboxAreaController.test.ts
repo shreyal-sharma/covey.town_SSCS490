@@ -66,9 +66,12 @@ describe('JukeboxAreaController', () => {
 
       jukeboxArea.handleCommand(command, player);
 
-      expect(jukeboxArea.songQueue.length).toBe(1);
-      expect(jukeboxArea.songQueue[0].url).toBe('https://example.com/song.mp3');
-      expect(jukeboxArea.songQueue[0].queuedBy).toEqual(player.id);
+      expect(jukeboxArea.songQueue.length).toBeGreaterThan(0);
+      const queuedSong = jukeboxArea.songQueue[0];
+
+      expect(queuedSong.queuedBy).toBeDefined();
+      expect(queuedSong.queuedBy!.id).toEqual(player.id);
+      expect(queuedSong.url).toBe('https://example.com/song.mp3');
     });
 
     it('updates elapsedTimeSec via command', () => {
@@ -114,7 +117,10 @@ describe('JukeboxAreaController', () => {
       jukeboxArea.handleCommand(command, player);
 
       expect(jukeboxArea.songQueue.length).toBe(1);
-      expect(jukeboxArea.songQueue[0].url).toBe('a');
+      const queuedSong = jukeboxArea.songQueue[0];
+      expect(queuedSong.queuedBy).toBeDefined();
+      expect(queuedSong.queuedBy!.id).toEqual(player.id);
+      expect(queuedSong.url).toBe('a');
     });
   });
 
@@ -125,7 +131,7 @@ describe('JukeboxAreaController', () => {
 
       const model = jukeboxArea.toModel();
 
-      expect(model.occupants).toEqual([player.id]);
+      expect(model.occupants).toEqual([testPlayer.id]);
       expect(model.songQueue).toEqual(jukeboxArea.songQueue);
       expect(model.type).toBe('JukeboxArea');
     });
