@@ -28,6 +28,7 @@ export default class JukeboxArea extends InteractableArea {
   ) {
     super(id, coordinates, townEmitter);
     this.songQueue = songQueue;
+    this._periodicEmitAreaChanged();
   }
 
   /**
@@ -142,5 +143,17 @@ export default class JukeboxArea extends InteractableArea {
 
       this._emitAreaChanged();
     }
+  }
+
+  /**
+   * Emits an area update once a second. This allows users who join mid-song
+   * to get a synchronization update and start playing music. This also allows
+   * for periodic synchronization between the frontend and backend.
+   */
+  private _periodicEmitAreaChanged() {
+    const period = 1000; // 1000 ms is one second
+
+    this._emitAreaChanged();
+    setTimeout(() => this._periodicEmitAreaChanged(), period);
   }
 }

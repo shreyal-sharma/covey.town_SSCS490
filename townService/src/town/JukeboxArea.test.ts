@@ -122,7 +122,7 @@ describe('JukeboxArea', () => {
       expect(lastEmittedUpdate.id).toEqual(id);
       expect((lastEmittedUpdate as JukeboxAreaModel).songQueue[0].url).toEqual(testSong.url);
 
-      jest.runAllTimers();
+      jest.runOnlyPendingTimers();
       expect(testArea.songQueue).toHaveLength(0);
       expect(getLastEmittedEvent(townEmitter, 'interactableUpdate')).toEqual({
         id,
@@ -155,9 +155,45 @@ describe('JukeboxArea', () => {
 
       expect(testArea.songQueue).toHaveLength(1);
 
-      jest.runAllTimers();
+      jest.runOnlyPendingTimers();
 
       expect(testArea.songQueue).toHaveLength(0);
+    });
+  });
+
+  describe('_periodicEmitAreaChanged', () => {
+    it('Sends out an interactableUpdate event periodically', () => {
+      const firstEvent = getLastEmittedEvent(townEmitter, 'interactableUpdate');
+      expect(firstEvent).toEqual({
+        id,
+        songQueue: [],
+        occupants: [newPlayer.id],
+        type: 'JukeboxArea',
+      });
+
+      jest.runOnlyPendingTimers();
+      const secondEvent = getLastEmittedEvent(townEmitter, 'interactableUpdate');
+      expect(secondEvent).toEqual({
+        id,
+        songQueue: [],
+        occupants: [newPlayer.id],
+        type: 'JukeboxArea',
+      });
+      // Because we had a new event emitted, they should not be equal
+      expect(firstEvent).not.toBe(secondEvent);
+
+      jest.runOnlyPendingTimers();
+      const thirdEvent = getLastEmittedEvent(townEmitter, 'interactableUpdate');
+      expect(thirdEvent).toEqual({
+        id,
+        songQueue: [],
+        occupants: [newPlayer.id],
+        type: 'JukeboxArea',
+      });
+      // Because we had a new event emitted, they should not be equal
+      expect(secondEvent).not.toBe(thirdEvent);
+
+      // three is basically infinity, right? :)
     });
   });
 });
