@@ -415,7 +415,7 @@ export default class Town {
 
     const jukeboxAreas = objectLayer.objects
       .filter(obj => obj.type === 'JukeboxArea')
-      .map(obj => JukeboxAreaController.fromMapObject(obj, this._broadcastEmitter));  
+      .map(obj => JukeboxAreaController.fromMapObject(obj, this._broadcastEmitter));
 
     const conversationAreas = objectLayer.objects
       .filter(eachObject => eachObject.type === 'ConversationArea')
