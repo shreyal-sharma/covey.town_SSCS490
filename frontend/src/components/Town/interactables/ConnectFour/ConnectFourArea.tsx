@@ -127,7 +127,8 @@ export default function ConnectFourArea({
           setJoiningGame(false);
         }}
         isLoading={joiningGame}
-        disabled={joiningGame}>
+        disabled={joiningGame}
+      >
         Start Game
       </Button>
     );
@@ -149,7 +150,8 @@ export default function ConnectFourArea({
           setJoiningGame(false);
         }}
         isLoading={joiningGame}
-        disabled={joiningGame}>
+        disabled={joiningGame}
+      >
         Join New Game
       </Button>
     );

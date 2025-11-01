@@ -14,14 +14,14 @@ import { useLocation, useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   googleButton: {
-    background: 'white',
-    color: 'rgb(0, 94, 166)',
-    borderRadius: '4px',
-    border: '2px solid rgb(2, 122, 197)',
-    margin: '1.8em 0 0.7em',
-    textTransform: 'none',
-    boxShadow: 'none',
-    padding: '0.3em 1em',
+    'background': 'white',
+    'color': 'rgb(0, 94, 166)',
+    'borderRadius': '4px',
+    'border': '2px solid rgb(2, 122, 197)',
+    'margin': '1.8em 0 0.7em',
+    'textTransform': 'none',
+    'boxShadow': 'none',
+    'padding': '0.3em 1em',
     [theme.breakpoints.down('sm')]: {
       width: '100%',
     },
@@ -31,10 +31,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   errorMessage: {
-    color: 'red',
-    display: 'flex',
-    alignItems: 'center',
-    margin: '1em 0 0.2em',
+    'color': 'red',
+    'display': 'flex',
+    'alignItems': 'center',
+    'margin': '1em 0 0.2em',
     '& svg': {
       marginRight: '0.4em',
     },
@@ -88,34 +88,34 @@ export default function LoginPage() {
     <IntroContainer>
       {process.env.REACT_APP_SET_AUTH === 'firebase' && (
         <>
-          <Typography variant="h5" className={classes.gutterBottom}>
+          <Typography variant='h5' className={classes.gutterBottom}>
             Sign in to join a room
           </Typography>
-          <Typography variant="body1">Sign in using your Twilio Google Account</Typography>
+          <Typography variant='body1'>Sign in using your Twilio Google Account</Typography>
         </>
       )}
 
       {process.env.REACT_APP_SET_AUTH === 'passcode' && (
         <>
-          <Typography variant="h5" className={classes.gutterBottom}>
+          <Typography variant='h5' className={classes.gutterBottom}>
             Enter passcode to join a room
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid container justifyContent="space-between">
+            <Grid container justifyContent='space-between'>
               <div className={classes.passcodeContainer}>
-                <InputLabel shrink htmlFor="input-passcode">
+                <InputLabel shrink htmlFor='input-passcode'>
                   Passcode
                 </InputLabel>
                 <TextField
-                  id="input-passcode"
+                  id='input-passcode'
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setPasscode(e.target.value)}
-                  type="password"
-                  variant="outlined"
-                  size="small"
+                  type='password'
+                  variant='outlined'
+                  size='small'
                 />
                 <div>
                   {authError && (
-                    <Typography variant="caption" className={classes.errorMessage}>
+                    <Typography variant='caption' className={classes.errorMessage}>
                       <ErrorOutlineIcon />
                       {authError.message}
                     </Typography>
@@ -123,11 +123,11 @@ export default function LoginPage() {
                 </div>
               </div>
             </Grid>
-            <Grid container justifyContent="flex-end">
+            <Grid container justifyContent='flex-end'>
               <Button
-                variant="contained"
-                color="primary"
-                type="submit"
+                variant='contained'
+                color='primary'
+                type='submit'
                 disabled={!passcode.length}
                 className={classes.submitButton}
               >
