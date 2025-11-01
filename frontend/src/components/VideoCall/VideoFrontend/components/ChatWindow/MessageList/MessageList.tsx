@@ -9,10 +9,12 @@ import useTownController from '../../../../../../hooks/useTownController';
 import useChatContext from '../../../hooks/useChatContext/useChatContext';
 
 const getFormattedTime = (message?: ChatMessage) =>
-  message?.dateCreated.toLocaleTimeString('en-us', { hour: 'numeric', minute: 'numeric' }).toLowerCase();
+  message?.dateCreated
+    .toLocaleTimeString('en-us', { hour: 'numeric', minute: 'numeric' })
+    .toLowerCase();
 
 export default function MessageList() {
-  const {messages } = useChatContext();
+  const { messages } = useChatContext();
   const coveyTownController = useTownController();
   const localUserName = coveyTownController?.userName;
 
@@ -25,7 +27,8 @@ export default function MessageList() {
         const previousTime = getFormattedTime(messages[idx - 1]);
 
         // Display the MessageInfo component when the author or formatted timestamp differs from the previous message
-        const shouldDisplayMessageInfo = time !== previousTime || message.author !== messages[idx - 1]?.author;
+        const shouldDisplayMessageInfo =
+          time !== previousTime || message.author !== messages[idx - 1]?.author;
 
         const isLocalParticipant = localUserName === message.author;
 
@@ -34,7 +37,11 @@ export default function MessageList() {
         return (
           <React.Fragment key={message.sid}>
             {shouldDisplayMessageInfo && (
-              <MessageInfo author={profile?.userName || message.author} isLocalParticipant={isLocalParticipant} dateCreated={time} />
+              <MessageInfo
+                author={profile?.userName || message.author}
+                isLocalParticipant={isLocalParticipant}
+                dateCreated={time}
+              />
             )}
             <TextMessage body={message.body} isLocalParticipant={isLocalParticipant} />
           </React.Fragment>

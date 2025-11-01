@@ -25,7 +25,7 @@ const useStyles = makeStyles(() =>
       border: '0',
       padding: '0.4em',
     },
-  })
+  }),
 );
 
 export default function ChatWindowHeader() {
@@ -35,10 +35,13 @@ export default function ChatWindowHeader() {
   return (
     <div className={classes.container}>
       <div className={classes.text}>Chat</div>
-      {isChatWindowClosable ? <button className={classes.closeChatWindow} onClick={() => setIsChatWindowOpen(false)}>
-        <CloseIcon />
-      </button> : <></>}
-
+      {isChatWindowClosable ? (
+        <button className={classes.closeChatWindow} onClick={() => setIsChatWindowOpen(false)}>
+          <CloseIcon />
+        </button>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

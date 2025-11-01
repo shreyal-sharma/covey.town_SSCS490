@@ -1,14 +1,8 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "types": [
-      "jest"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["jest"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -24,29 +18,16 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "jsx": "preserve",
-    "rootDirs": [
-      "./src/",
-      "./generated/",
-      "./pages/"
-    ],
+    "rootDirs": ["./src/", "./generated/", "./pages/"],
     "alwaysStrict": true /* Parse in strict mode and emit "use strict" for each source file. */,
     "incremental": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "src/types"
-    ],
+    "typeRoots": ["./node_modules/@types", "src/types"]
   },
-  "include": [
-    "src",
-    "generated",
-    "pages"
-  ],
+  "include": ["src", "generated", "pages"],
   "references": [
     {
       "path": "../shared/"
     }
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

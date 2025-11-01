@@ -14,7 +14,13 @@ type ChatContextType = {
 
 export const ChatContext = createContext<ChatContextType>(null!);
 
-export const ChatProvider = ({ children, interactableID} : {children?: ReactNode | undefined, interactableID?: string}) => {
+export const ChatProvider = ({
+  children,
+  interactableID,
+}: {
+  children?: ReactNode | undefined;
+  interactableID?: string;
+}) => {
   const coveyTownController = useTownController();
   const isChatWindowOpenRef = useRef(false);
   const [isChatWindowOpen, setIsChatWindowOpen] = useState(false);
@@ -64,8 +70,9 @@ export const ChatProvider = ({ children, interactableID} : {children?: ReactNode
         hasUnreadMessages,
         messages,
         conversation,
-        isChatWindowClosable
-      }}>
+        isChatWindowClosable,
+      }}
+    >
       {children}
     </ChatContext.Provider>
   );
