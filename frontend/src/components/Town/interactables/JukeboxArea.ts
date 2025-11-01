@@ -2,7 +2,9 @@ import Interactable, { KnownInteractableTypes } from '../Interactable';
 
 export default class JukeboxArea extends Interactable {
   private _labelText?: Phaser.GameObjects.Text;
+
   private _defaultMusicURL?: string;
+
   private _isInteracting = false;
 
   public get defaultMusicURL() {

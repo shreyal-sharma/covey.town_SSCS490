@@ -122,8 +122,7 @@ export default function TicTacToeArea({
             setJoiningGame(false);
           }}
           isLoading={joiningGame}
-          disabled={joiningGame}
-        >
+          disabled={joiningGame}>
           Join New Game
         </Button>
       );

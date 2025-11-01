@@ -86,8 +86,9 @@ export default function ConnectFourBoard({
               }}
               disabled={!isOurTurn}
               backgroundColor={cell}
-              aria-label={`Cell ${rowIndex},${colIndex} (${cell || 'Empty'})`}
-            ></StyledConnectFourSquare>
+              aria-label={`Cell ${rowIndex},${colIndex} (${
+                cell || 'Empty'
+              })`}></StyledConnectFourSquare>
           );
         });
       })}

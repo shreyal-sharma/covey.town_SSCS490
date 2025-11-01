@@ -90,8 +90,7 @@ export default function TicTacToeBoard({ gameAreaController }: TicTacToeGameProp
                 }
               }}
               disabled={!isOurTurn}
-              aria-label={`Cell ${rowIndex},${colIndex}`}
-            >
+              aria-label={`Cell ${rowIndex},${colIndex}`}>
               {cell}
             </StyledTicTacToeSquare>
           );

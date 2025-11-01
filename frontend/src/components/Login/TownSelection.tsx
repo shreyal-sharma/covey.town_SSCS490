@@ -288,8 +288,7 @@ export default function TownSelection(): JSX.Element {
                   data-testid='newTownButton'
                   onClick={handleCreate}
                   isLoading={isJoining}
-                  disabled={isJoining}
-                >
+                  disabled={isJoining}>
                   Create
                 </Button>
               </Box>
@@ -318,8 +317,7 @@ export default function TownSelection(): JSX.Element {
                   data-testid='joinTownByIDButton'
                   onClick={() => handleJoin(townIDToJoin)}
                   isLoading={isJoining}
-                  disabled={isJoining}
-                >
+                  disabled={isJoining}>
                   Connect
                 </Button>
               </Flex>
@@ -348,8 +346,7 @@ export default function TownSelection(): JSX.Element {
                         <Button
                           onClick={() => handleJoin(town.townID)}
                           disabled={town.currentOccupancy >= town.maximumOccupancy || isJoining}
-                          isLoading={isJoining}
-                        >
+                          isLoading={isJoining}>
                           Connect
                         </Button>
                       </Td>

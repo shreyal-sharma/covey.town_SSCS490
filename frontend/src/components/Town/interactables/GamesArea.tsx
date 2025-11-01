@@ -108,15 +108,13 @@ function GameArea({ interactableID }: { interactableID: InteractableID }): JSX.E
           style={{
             height: '400px',
             overflowY: 'scroll',
-          }}
-        >
+          }}>
           <div
             style={{
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
-            }}
-          >
+            }}>
             <ChatChannel interactableID={gameAreaController.id} />
           </div>
         </Box>
