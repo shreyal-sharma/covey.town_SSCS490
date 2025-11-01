@@ -31,16 +31,17 @@ export interface Interactable {
 export type Song = {
   url: string;
   thumbnail: string;
+  // Stored in ms
   duration: number;
   title: string;
   artist: string;
   queuedBy?: Player;
+  // Stored in ms since Unix epoch UTC (what Date.now() returns)
+  startedAt?: number;
 }
 
 export interface JukeboxArea extends Interactable {
   songQueue: Song[];
-  elapsedTimeSec: number;
-  timeWhenLastAreaUpdateWasSent: number;
 }
 
 export type TownSettingsUpdate = {
@@ -236,7 +237,7 @@ interface InteractableCommandBase {
 }
 
 export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand
-| JukeboxAreaUpdateCommand | SearchSongCommand | QueueSongCommand | InitiateSongSkipVoteCommand | VoteForSongSkipCommand;
+| SearchSongCommand | QueueSongCommand | InitiateSongSkipVoteCommand | VoteForSongSkipCommand;
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
@@ -256,10 +257,6 @@ export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
   gameID: GameInstanceID;
   move: MoveType;
-}
-export interface JukeboxAreaUpdateCommand {
-  type: 'JukeboxAreaUpdate';
-  update: JukeboxArea;
 }
 /**
  * Will need to check for an empty search and return error
@@ -282,7 +279,7 @@ export interface InitiateSongSkipVoteCommand {
   player: Player;
 }
 export interface VoteForSongSkipCommand {
-  type: 'VoteForSongSKip';
+  type: 'VoteForSongSkip';
   song: Song;
   skipThisSong: boolean;
 }
