@@ -6,9 +6,10 @@ export type KnownInteractableTypes =
   | 'conversationArea'
   | 'viewingArea'
   | 'transporter'
+  | 'jukeboxArea'
   | 'gameArea';
 
-/**
+  /**
  * A base abstract class for representing an "interactable" in the Phaser game world.
  *
  * The Interactable will automatically determine when the player is overlapping with it, and

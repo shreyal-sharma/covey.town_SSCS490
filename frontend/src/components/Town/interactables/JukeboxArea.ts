@@ -1,17 +1,15 @@
 import Interactable, { KnownInteractableTypes } from '../Interactable';
 
-export default class ViewingArea extends Interactable {
+export default class JukeboxArea extends Interactable {
   private _labelText?: Phaser.GameObjects.Text;
-
-  private _defaultVideoURL?: string;
-
+  private _defaultMusicURL?: string;
   private _isInteracting = false;
 
-  public get defaultVideoURL() {
-    if (!this._defaultVideoURL) {
+  public get defaultMusicURL() {
+    if (!this._defaultMusicURL) {
       return 'No URL found';
     }
-    return this._defaultVideoURL;
+    return this._defaultMusicURL;
   }
 
   addedToScene() {
@@ -19,12 +17,12 @@ export default class ViewingArea extends Interactable {
     this.setTintFill();
     this.setAlpha(0.3);
 
-    this._defaultVideoURL = this.getData('video');
+    this._defaultMusicURL = this.getData('music');
     this._labelText = this.scene.add.text(
       this.x - this.displayWidth / 2,
       this.y - this.displayHeight / 2,
-      `Press space to watch the ${this.name} video`,
-      { color: 'white', backgroundColor: 'red' },
+      `Press space to play music from ${this.name}`,
+      { color: 'white', backgroundColor: 'blue' },
     );
     this._labelText.setVisible(false);
     this.setDepth(-1);
@@ -54,6 +52,6 @@ export default class ViewingArea extends Interactable {
   }
 
   getType(): KnownInteractableTypes {
-    return 'viewingArea';
+    return 'jukeboxArea';
   }
 }
