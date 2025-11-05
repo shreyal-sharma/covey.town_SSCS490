@@ -42,6 +42,8 @@ import InteractableAreaController, {
 import TicTacToeAreaController from './interactable/TicTacToeAreaController';
 import ViewingAreaController from './interactable/ViewingAreaController';
 import PlayerController from './PlayerController';
+import JukeboxArea from '../components/Town/interactables/JukeboxArea';
+import JukeboxAreaController from './interactable/JukeboxAreaController';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY_MS = 300;
 const SOCKET_COMMAND_TIMEOUT_MS = 5000;
@@ -336,6 +338,13 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
       eachInteractable => eachInteractable instanceof GameAreaController,
     );
     return ret as GameAreaController<GameState, GameEventTypes>[];
+  }
+  
+  public get jukeboxAreas() {
+    const ret = this._interactableControllers.filter(
+      eachInteractable => eachInteractable instanceof JukeboxAreaController,
+    );
+    return ret as JukeboxAreaController[];
   }
 
   /**
@@ -694,6 +703,26 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   }
 
   /**
+   * Retrieves the jukebox area controller corresponding to a jukebox area by ID, or
+   * throws an error if the jukebox area controller does not exist
+   *
+   * @param jukeboxArea
+   * @returns
+   */
+  public getJukeboxAreaController(
+    jukeboxArea: JukeboxArea,
+  ): JukeboxAreaController {
+    const existingController = this._interactableControllers.find(
+      eachExistingArea => eachExistingArea.id === jukeboxArea.name,
+    );
+    if (existingController instanceof JukeboxAreaController) {
+      return existingController;
+    } else {
+      throw new Error(`No such viewing area controller ${existingController}`);
+    }
+  }
+
+  /**
    * Emit a viewing area update to the townService
    * @param viewingArea The Viewing Area Controller that is updated and should be emitted
    *    with the event
@@ -783,6 +812,13 @@ export function useInteractableAreaController<T>(interactableAreaID: string): T 
     if (viewingAreaController) {
       return viewingAreaController as unknown as T;
     }
+    //Look for a jukebox area
+    const jukeboxAreaController = townController.jukeboxAreas.find(
+      eachArea => eachArea.id == interactableAreaID,
+    );
+    if (jukeboxAreaController) {
+      return jukeboxAreaController as unknown as T;
+    }
     throw new Error(`Requested interactable area ${interactableAreaID} does not exist`);
   }
   return gameAreaController as unknown as T;
@@ -829,7 +865,7 @@ export function useActiveInteractableAreas(): GenericInteractableAreaController[
   const townController = useTownController();
   const [interactableAreas, setInteractableAreas] = useState<GenericInteractableAreaController[]>(
     (townController.gameAreas as GenericInteractableAreaController[])
-      .concat(townController.conversationAreas, townController.viewingAreas)
+      .concat(townController.conversationAreas, townController.viewingAreas, townController.jukeboxAreas)
       .filter(eachArea => eachArea.isActive()),
   );
   useEffect(() => {
