@@ -116,7 +116,7 @@ export default class ViewingArea extends InteractableArea {
     if (command.type === 'ViewingAreaUpdate') {
       const viewingArea = command as ViewingAreaUpdateCommand;
       this.updateModel(viewingArea.update);
-      return {} as InteractableCommandReturnType<CommandType>;
+      return undefined as InteractableCommandReturnType<CommandType>;
     }
     throw new InvalidParametersError('Unknown command type');
   }
