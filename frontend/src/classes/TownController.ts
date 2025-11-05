@@ -29,6 +29,7 @@ import {
 import {
   isConnectFourArea,
   isConversationArea,
+  isJukeboxArea,
   isTicTacToeArea,
   isViewingArea,
 } from '../types/TypeUtils';
@@ -639,7 +640,12 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
             this._interactableControllers.push(
               new ConnectFourAreaController(eachInteractable.id, eachInteractable, this),
             );
+          } else if (isJukeboxArea(eachInteractable)) {
+            this._interactableControllers.push(
+              new JukeboxAreaController(eachInteractable),
+            );
           }
+
         });
         this._userID = initialData.userID;
         this._ourPlayer = this.players.find(eachPlayer => eachPlayer.id == this.userID);

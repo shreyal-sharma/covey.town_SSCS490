@@ -2,6 +2,7 @@ import {
   ConversationArea,
   Interactable,
   TicTacToeGameState,
+  JukeboxArea,
   ViewingArea,
   GameArea,
   ConnectFourGameState,
@@ -30,4 +31,12 @@ export function isConnectFourArea(
   interactable: Interactable,
 ): interactable is GameArea<ConnectFourGameState> {
   return interactable.type === 'ConnectFourArea';
+}
+
+
+/**
+ * Test to see if an interactable is a jukebox area
+ */
+export function isJukeboxArea(interactable: Interactable): interactable is JukeboxArea {
+  return interactable.type === 'JukeboxArea';
 }
