@@ -340,7 +340,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     );
     return ret as GameAreaController<GameState, GameEventTypes>[];
   }
-  
+
   public get jukeboxAreas() {
     const ret = this._interactableControllers.filter(
       eachInteractable => eachInteractable instanceof JukeboxAreaController,
@@ -641,11 +641,8 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
               new ConnectFourAreaController(eachInteractable.id, eachInteractable, this),
             );
           } else if (isJukeboxArea(eachInteractable)) {
-            this._interactableControllers.push(
-              new JukeboxAreaController(eachInteractable),
-            );
+            this._interactableControllers.push(new JukeboxAreaController(eachInteractable));
           }
-
         });
         this._userID = initialData.userID;
         this._ourPlayer = this.players.find(eachPlayer => eachPlayer.id == this.userID);
@@ -715,9 +712,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
    * @param jukeboxArea
    * @returns
    */
-  public getJukeboxAreaController(
-    jukeboxArea: JukeboxArea,
-  ): JukeboxAreaController {
+  public getJukeboxAreaController(jukeboxArea: JukeboxArea): JukeboxAreaController {
     const existingController = this._interactableControllers.find(
       eachExistingArea => eachExistingArea.id === jukeboxArea.name,
     );
@@ -871,7 +866,11 @@ export function useActiveInteractableAreas(): GenericInteractableAreaController[
   const townController = useTownController();
   const [interactableAreas, setInteractableAreas] = useState<GenericInteractableAreaController[]>(
     (townController.gameAreas as GenericInteractableAreaController[])
-      .concat(townController.conversationAreas, townController.viewingAreas, townController.jukeboxAreas)
+      .concat(
+        townController.conversationAreas,
+        townController.viewingAreas,
+        townController.jukeboxAreas,
+      )
       .filter(eachArea => eachArea.isActive()),
   );
   useEffect(() => {

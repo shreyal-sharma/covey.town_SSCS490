@@ -7,6 +7,7 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react';
 import useTownController from '../../../hooks/useTownController';
+import React from 'react';
 import { InteractableID } from '../../../types/CoveyTownSocket';
 import { useInteractable, useInteractableAreaController } from '../../../classes/TownController';
 import JukeboxAreaController from '../../../classes/interactable/JukeboxAreaController';
@@ -14,13 +15,17 @@ import JukeboxAreaInteractable from './JukeboxArea';
 import { useCallback } from 'react';
 
 function JukeboxArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const jukeboxAreaController =
     useInteractableAreaController<JukeboxAreaController>(interactableID);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const townController = useTownController();
 
-  return <>
-  <h1>Hello, World!</h1>
-  </>;
+  return (
+    <>
+      <h1>Hello, World!</h1>
+    </>
+  );
 }
 
 /**

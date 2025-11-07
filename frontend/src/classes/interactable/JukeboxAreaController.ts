@@ -7,7 +7,7 @@ import InteractableAreaController, {
 /**
  * The events that a JukeboxAreaController can emit
  */
-export type JukeboxAreaEvents = BaseInteractableEventMap & {};
+export type JukeboxAreaEvents = BaseInteractableEventMap;
 
 export default class JukeboxAreaController extends InteractableAreaController<
   JukeboxAreaEvents,
@@ -28,7 +28,7 @@ export default class JukeboxAreaController extends InteractableAreaController<
 
   /**
    * Since we are always playing a song, we are always active.
-   * 
+   *
    * @returns whether or not the jukebox area is active (it always is)
    */
   public isActive(): boolean {
@@ -50,6 +50,7 @@ export default class JukeboxAreaController extends InteractableAreaController<
     return JUKEBOX_AREA_TYPE;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected _updateFrom(updatedModel: JukeboxAreaModel): void {
     // TODO: implement this
   }

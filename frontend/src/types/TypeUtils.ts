@@ -33,7 +33,6 @@ export function isConnectFourArea(
   return interactable.type === 'ConnectFourArea';
 }
 
-
 /**
  * Test to see if an interactable is a jukebox area
  */
