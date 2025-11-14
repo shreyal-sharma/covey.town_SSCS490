@@ -93,7 +93,7 @@ describe('JukeboxArea', () => {
           ),
         ).toThrowError();
       });
-      it('Creates a       expect(testArea.skipVotes).toBe(0);new viewing area using the provided boundingBox and id, with isPlaying defaulting to false and progress to 0, and emitter', () => {
+      it('Creates a new viewing area using the provided boundingBox and id, with isPlaying defaulting to false and progress to 0, and emitter', () => {
         const x = 30;
         const y = 20;
         const width = 10;
