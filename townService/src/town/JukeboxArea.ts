@@ -14,6 +14,10 @@ import InvalidParametersError from '../lib/InvalidParametersError';
 export default class JukeboxArea extends InteractableArea {
   public songQueue: Song[];
 
+  public skipVotes: number;
+
+  private _songEndTimeout: NodeJS.Timeout | undefined;
+
   /**
    * Creates a new JukeboxArea.
    *
@@ -22,12 +26,13 @@ export default class JukeboxArea extends InteractableArea {
    * @param townEmitter a broadcast emitter that can be used to emit updates to players
    */
   public constructor(
-    { songQueue, id }: Omit<JukeboxAreaModel, 'type'>,
+    { songQueue, skipVotes, id }: Omit<JukeboxAreaModel, 'type'>,
     coordinates: BoundingBox,
     townEmitter: TownEmitter,
   ) {
     super(id, coordinates, townEmitter);
     this.songQueue = songQueue;
+    this.skipVotes = skipVotes;
     this._periodicEmitAreaChanged();
   }
 
@@ -42,6 +47,7 @@ export default class JukeboxArea extends InteractableArea {
       id: this.id,
       occupants: this.occupantsByID,
       songQueue: this.songQueue,
+      skipVotes: this.skipVotes,
     };
   }
 
@@ -60,7 +66,11 @@ export default class JukeboxArea extends InteractableArea {
       throw new Error(`Malformed jukebox area ${name}`);
     }
     const rect: BoundingBox = { x: mapObject.x, y: mapObject.y, width, height };
-    return new JukeboxArea({ id: name, occupants: [], songQueue: [] }, rect, broadcastEmitter);
+    return new JukeboxArea(
+      { id: name, occupants: [], songQueue: [], skipVotes: 0 },
+      rect,
+      broadcastEmitter,
+    );
   }
 
   /**
@@ -85,10 +95,12 @@ export default class JukeboxArea extends InteractableArea {
       return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'InitiateSongSkipVote') {
-      throw new Error('Not implemented');
+      this._handleVote();
+      return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'VoteForSongSkip') {
-      throw new Error('Not implemented');
+      this._handleVote();
+      return undefined as InteractableCommandReturnType<CommandType>;
     }
 
     throw new InvalidParametersError('Unknown command type');
@@ -134,15 +146,36 @@ export default class JukeboxArea extends InteractableArea {
    * recursively when the song completes.
    */
   private _songEnd() {
+    // skip votes get cleared when a song ends
+    this.skipVotes = 0;
     // remove zeroth song from song queue
     this.songQueue.shift();
     if (this.songQueue.length >= 1) {
       this.songQueue[0].startedAt = Date.now();
 
-      setTimeout(() => this._songEnd(), this.songQueue[0].duration);
+      this._songEndTimeout = setTimeout(() => this._songEnd(), this.songQueue[0].duration);
 
       this._emitAreaChanged();
     }
+  }
+
+  /**
+   * Handles an incoming vote, whether from an InitiateSongSkip or a VoteForSongSkip
+   */
+  private _handleVote() {
+    if (this.songQueue.length === 0) {
+      return;
+    }
+    this.skipVotes += 1;
+    // TODO: investigate more intelligent voting logic (consider the number
+    // of people in the town)
+    if (this.skipVotes >= 3) {
+      // We need to cancel the current song end timeout, because it will
+      // occur during the next song.
+      clearTimeout(this._songEndTimeout);
+      this._songEnd();
+    }
+    this._emitAreaChanged();
   }
 
   /**
