@@ -39,40 +39,30 @@ function JukeboxArea({ interactableID }: { interactableID: InteractableID }): JS
   );
 }
 
-export function SkipVoteButton({
-  visible,
-  onConfirm,
-  onCancel,
-}: SkipVoteButtonProps) {
+export function SkipVoteButton({ visible, onConfirm, onCancel }: SkipVoteButtonProps) {
   return (
     <Box
-      position="fixed"
-      bottom="16px"
-      left="20px"
+      position='fixed'
+      bottom='16px'
+      left='20px'
       zIndex={1100}
       display={visible ? 'flex' : 'none'}
-      bg="white"
-      border="1px solid #E4E7E9"
-      borderRadius="12px"
-      boxShadow="md"
-      px="12px"
-      py="10px"
-      alignItems="center"
-      gap="10px"
-    >
-      <Text fontWeight="semibold" mr="4px">Skip song?</Text>
-      <HStack spacing="8px">
-        <Button
-          size="sm"
-          onClick={onConfirm}
-        >
+      bg='white'
+      border='1px solid #E4E7E9'
+      borderRadius='12px'
+      boxShadow='md'
+      px='12px'
+      py='10px'
+      alignItems='center'
+      gap='10px'>
+      <Text fontWeight='semibold' mr='4px'>
+        Skip song?
+      </Text>
+      <HStack spacing='8px'>
+        <Button size='sm' onClick={onConfirm}>
           Confirm
         </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onCancel}
-        >
+        <Button size='sm' variant='outline' onClick={onCancel}>
           Cancel
         </Button>
       </HStack>
@@ -93,27 +83,30 @@ export default function JukeboxAreaWrapper(): JSX.Element {
   if (jukeboxArea) {
     return (
       <>
-      <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false} size='xl'>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{jukeboxArea.name}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <JukeboxArea interactableID={jukeboxArea.id} />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-
+        <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false} size='xl'>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>{jukeboxArea.name}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <JukeboxArea interactableID={jukeboxArea.id} />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
       </>
     );
   }
   return (
-  <>
+    <>
       <SkipVoteButton
         visible={true} //TO DO change to actual logic
-        onConfirm={() => {/* call your skip-vote mutation */}}
-        onCancel={() => {/* optional: hide or just no-op */}}
+        onConfirm={() => {
+          /* call your skip-vote mutation */
+        }}
+        onCancel={() => {
+          /* optional: hide or just no-op */
+        }}
       />
-  </>
+    </>
   );
 }
