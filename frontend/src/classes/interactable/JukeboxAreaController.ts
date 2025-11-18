@@ -1,4 +1,4 @@
-import { JukeboxArea as JukeboxAreaModel } from '../../types/CoveyTownSocket';
+import { JukeboxArea as JukeboxAreaModel, Song } from '../../types/CoveyTownSocket';
 import InteractableAreaController, {
   BaseInteractableEventMap,
   JUKEBOX_AREA_TYPE,
@@ -7,7 +7,13 @@ import InteractableAreaController, {
 /**
  * The events that a JukeboxAreaController can emit
  */
-export type JukeboxAreaEvents = BaseInteractableEventMap;
+export type JukeboxAreaEvents = BaseInteractableEventMap & {
+  /**
+   * A songQueueChange event indicates that a song has been queued or ended.
+   * Listeners are passed the new queue in the parameter `songQueue`
+   */
+  songQueueChange: (queue: Song[]) => void;
+};
 
 export default class JukeboxAreaController extends InteractableAreaController<
   JukeboxAreaEvents,
@@ -50,8 +56,23 @@ export default class JukeboxAreaController extends InteractableAreaController<
     return JUKEBOX_AREA_TYPE;
   }
 
+  /**
+   * Returns the an array of Song objects.
+   */
+  public get songQueue(): Song[] {
+    return this._model.songQueue;
+  }
+
+  /**
+   * Updates the songQueue array if a song is queued or a song ends.
+   */
+  public set songQueue(queue: Song[]) {
+    if (this._model.songQueue != queue) this._model.songQueue = queue;
+    this.emit('songQueueChange', queue);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected _updateFrom(updatedModel: JukeboxAreaModel): void {
-    // TODO: implement this
+    this.songQueue = updatedModel.songQueue;
   }
 }
