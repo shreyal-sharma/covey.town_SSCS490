@@ -42,6 +42,7 @@ export type Song = {
 
 export interface JukeboxArea extends Interactable {
   songQueue: Song[];
+  skipVotes: number;
 }
 
 export type TownSettingsUpdate = {

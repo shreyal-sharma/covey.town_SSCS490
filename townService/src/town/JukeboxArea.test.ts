@@ -20,6 +20,7 @@ describe('JukeboxArea', () => {
   let newPlayer: Player;
   const id = nanoid();
   const songQueue: Song[] = [];
+  const skipVotes = 0;
   const occupants: PlayerID[] = [];
 
   const testSong: Song = {
@@ -32,7 +33,7 @@ describe('JukeboxArea', () => {
 
   beforeEach(() => {
     mockClear(townEmitter);
-    testArea = new JukeboxArea({ id, songQueue, occupants }, testAreaBox, townEmitter);
+    testArea = new JukeboxArea({ id, songQueue, skipVotes, occupants }, testAreaBox, townEmitter);
     newPlayer = new Player(nanoid(), mock<TownEmitter>());
     testArea.add(newPlayer);
   });
@@ -49,6 +50,7 @@ describe('JukeboxArea', () => {
       expect(lastEmittedUpdate).toEqual({
         id,
         songQueue: [],
+        skipVotes,
         occupants: [extraPlayer.id],
         type: 'JukeboxArea',
       });
@@ -65,6 +67,7 @@ describe('JukeboxArea', () => {
       expect(lastEmittedUpdate).toEqual({
         id,
         songQueue: [],
+        skipVotes,
         occupants: [newPlayer.id],
         type: 'JukeboxArea',
       });
@@ -75,6 +78,7 @@ describe('JukeboxArea', () => {
       expect(model).toEqual({
         id,
         songQueue,
+        skipVotes,
         occupants: [newPlayer.id],
         type: 'JukeboxArea',
       });
@@ -127,6 +131,7 @@ describe('JukeboxArea', () => {
       expect(getLastEmittedEvent(townEmitter, 'interactableUpdate')).toEqual({
         id,
         songQueue: [],
+        skipVotes,
         occupants: [newPlayer.id],
         type: 'JukeboxArea',
       });
@@ -167,6 +172,7 @@ describe('JukeboxArea', () => {
       expect(firstEvent).toEqual({
         id,
         songQueue: [],
+        skipVotes,
         occupants: [newPlayer.id],
         type: 'JukeboxArea',
       });
@@ -176,6 +182,7 @@ describe('JukeboxArea', () => {
       expect(secondEvent).toEqual({
         id,
         songQueue: [],
+        skipVotes,
         occupants: [newPlayer.id],
         type: 'JukeboxArea',
       });
@@ -187,6 +194,7 @@ describe('JukeboxArea', () => {
       expect(thirdEvent).toEqual({
         id,
         songQueue: [],
+        skipVotes,
         occupants: [newPlayer.id],
         type: 'JukeboxArea',
       });
@@ -194,6 +202,48 @@ describe('JukeboxArea', () => {
       expect(secondEvent).not.toBe(thirdEvent);
 
       // three is basically infinity, right? :)
+    });
+  });
+
+  describe('_handleVote', () => {
+    it('does nothing if no song is queued', () => {
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+      expect(testArea.songQueue).toHaveLength(0);
+      expect(testArea.skipVotes).toBe(0);
+    });
+
+    it('increments the vote count when a song is playing', () => {
+      // @ts-expect-error (access to private method)
+      testArea._queueSong(testSong);
+      expect(testArea.skipVotes).toBe(0);
+
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+      expect(testArea.skipVotes).toBe(1);
+
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+      expect(testArea.skipVotes).toBe(2);
+    });
+
+    it('removes the current song from the queue if three votes are reached', () => {
+      // @ts-expect-error (access to private method)
+      testArea._queueSong(testSong);
+      // @ts-expect-error (access to private method)
+      testArea._queueSong(testSong);
+
+      const songQueueLength = testArea.songQueue.length;
+
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+
+      expect(testArea.songQueue).toHaveLength(songQueueLength - 1);
+      expect(testArea.skipVotes).toBe(0);
     });
   });
 });

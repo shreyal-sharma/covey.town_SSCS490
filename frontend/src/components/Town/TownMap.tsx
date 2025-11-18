@@ -10,6 +10,7 @@ import JukeboxAreaWrapper from './interactables/JukeboxAreaMusic';
 import useChatContext from '../VideoCall/VideoFrontend/hooks/useChatContext/useChatContext';
 import ChatWindow from '../VideoCall/VideoFrontend/components/ChatWindow/ChatWindow';
 import clsx from 'clsx';
+import MuteButton from './interactables/MuteButton';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -87,6 +88,7 @@ export default function TownMap(): JSX.Element {
       <NewConversationModal />
       <GameAreaWrapper />
       <JukeboxAreaWrapper />
+      <MuteButton />
       <aside className={clsx(classes.chatWindowContainer, { [classes.hide]: !isChatWindowOpen })}>
         <ChatWindow />
       </aside>
