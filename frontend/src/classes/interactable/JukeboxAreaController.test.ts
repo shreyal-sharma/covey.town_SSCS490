@@ -22,8 +22,9 @@ describe('JukeboxAreaController', () => {
   beforeEach(() => {
     testAreaModel = {
       id: nanoid(),
-      occupants: [],
       songQueue: [],
+      skipVotes: 0,
+      occupants: [],
       type: 'JukeboxArea',
     };
     testAreaController = new JukeboxAreaController(testAreaModel);
@@ -48,8 +49,9 @@ describe('JukeboxAreaController', () => {
     it('Updates the songQueue', () => {
       const newModel: JukeboxArea = {
         id: testAreaModel.id,
-        occupants: [],
         songQueue: [testSong],
+        skipVotes: 0,
+        occupants: [],
         type: 'JukeboxArea',
       };
       testAreaController.updateFrom(newModel, []);
@@ -61,6 +63,7 @@ describe('JukeboxAreaController', () => {
       const newModel: JukeboxArea = {
         id: nanoid(),
         songQueue: [],
+        skipVotes: 0,
         occupants: [],
         type: 'JukeboxArea',
       };
