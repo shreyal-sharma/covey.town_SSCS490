@@ -8,8 +8,7 @@ type AudioContextType = {
   audioRef: RefObject<HTMLAudioElement>;
 };
 
-const AudioContext = createContext<AudioContextType | null>(null);
-
+const audioContext = createContext<AudioContextType | null>(null);
 
 /**
  * AudioProvider
@@ -22,15 +21,11 @@ const AudioContext = createContext<AudioContextType | null>(null);
 export function AudioProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  return (
-    <AudioContext.Provider value={{ audioRef }}>
-      {children}
-    </AudioContext.Provider>
-  );
+  return <audioContext.Provider value={{ audioRef }}>{children}</audioContext.Provider>;
 }
 
 export function useAudio() {
-  const context = useContext(AudioContext);
+  const context = useContext(audioContext);
   if (!context) {
     throw new Error('useAudio must be used within AudioProvider');
   }

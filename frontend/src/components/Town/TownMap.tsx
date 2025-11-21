@@ -88,10 +88,10 @@ export default function TownMap(): JSX.Element {
     <div id='app-container'>
       <NewConversationModal />
       <GameAreaWrapper />
-    <AudioProvider>
-      <JukeboxAreaWrapper />
-      <MuteButton/>
-    </AudioProvider>
+      <AudioProvider>
+        <JukeboxAreaWrapper />
+        <MuteButton />
+      </AudioProvider>
       <aside className={clsx(classes.chatWindowContainer, { [classes.hide]: !isChatWindowOpen })}>
         <ChatWindow />
       </aside>

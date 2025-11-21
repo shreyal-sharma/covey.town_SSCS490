@@ -72,7 +72,7 @@ function JukeboxArea({
   };
 
   return (
-    <VStack spacing={4} width="100%" align="stretch">
+    <VStack spacing={4} width='100%' align='stretch'>
       {/* Toggle Section 
       Music Mode Toggle Section
       - Horizontal layout for label and toggle switch
@@ -80,25 +80,20 @@ function JukeboxArea({
       - Colors indicate active/inactive state
       - onChange calls parent callback to handle mode change
   */}
-      
-      <Flex justify="space-between" align="center" mb={2}>
-        <Text fontSize="lg" fontWeight="medium" color="gray.600">
+
+      <Flex justify='space-between' align='center' mb={2}>
+        <Text fontSize='lg' fontWeight='medium' color='gray.600'>
           Music Mode
         </Text>
 
         <HStack spacing={2}>
-          <Text fontSize="md" color={!isDefaultMode ? 'blue.500' : 'gray.400'}>
+          <Text fontSize='md' color={!isDefaultMode ? 'blue.500' : 'gray.400'}>
             Shared
           </Text>
 
-          <Switch
-            size="md"
-            colorScheme="blue"
-            isChecked={isDefaultMode}
-            onChange={onModeToggle}
-          />
+          <Switch size='md' colorScheme='blue' isChecked={isDefaultMode} onChange={onModeToggle} />
 
-          <Text fontSize="md" color={isDefaultMode ? 'blue.500' : 'gray.400'}>
+          <Text fontSize='md' color={isDefaultMode ? 'blue.500' : 'gray.400'}>
             Default
           </Text>
         </HStack>
@@ -108,52 +103,50 @@ function JukeboxArea({
       <Box
         bg={isDefaultMode ? 'blue.50' : 'green.50'}
         p={2}
-        borderRadius="md"
-        borderLeft="4px solid"
+        borderRadius='md'
+        borderLeft='4px solid'
         borderColor={isDefaultMode ? 'blue.500' : 'green.500'}>
-        <Text fontSize="sm" color="gray.700">
-          {isDefaultMode
-            ? 'Playing default music'
-            : 'Listening to shared town playlist'}
+        <Text fontSize='sm' color='gray.700'>
+          {isDefaultMode ? 'Playing default music' : 'Listening to shared town playlist'}
         </Text>
       </Box>
 
       {/* Now Playing Section */}
-      <Box bg="#70A1D9" p={6} borderRadius="xl" width="100%">
+      <Box bg='#70A1D9' p={6} borderRadius='xl' width='100%'>
         <VStack spacing={4}>
-          <Text fontSize="2xl" fontWeight="bold" color="black">
+          <Text fontSize='2xl' fontWeight='bold' color='black'>
             Now Playing
           </Text>
 
-          <Box bg="white" p={1} borderRadius="2xl" width="100%" boxShadow="md">
+          <Box bg='white' p={1} borderRadius='2xl' width='100%' boxShadow='md'>
             <VStack spacing={6}>
               {/* Song Display Box */}
-              <Box bg="#70A1D9" borderRadius="xl" width="100%" p={8}>
+              <Box bg='#70A1D9' borderRadius='xl' width='100%' p={8}>
                 <VStack spacing={6}>
-                  <Text fontSize="2xl" fontWeight="semibold" color="white">
+                  <Text fontSize='2xl' fontWeight='semibold' color='white'>
                     {currentSong}
                   </Text>
 
                   {/* Playback Controls */}
                   <HStack spacing={6}>
                     <IconButton
-                      aria-label="Play/Pause"
+                      aria-label='Play/Pause'
                       icon={
                         isPlaying ? (
-                          <Icon viewBox="0 0 24 24" boxSize={8}>
-                            <path fill="white" d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                          <Icon viewBox='0 0 24 24' boxSize={8}>
+                            <path fill='white' d='M6 4h4v16H6V4zm8 0h4v16h-4V4z' />
                           </Icon>
                         ) : (
-                          <Icon viewBox="0 0 24 24" boxSize={8}>
-                            <path fill="white" d="M8 5v14l11-7z" />
+                          <Icon viewBox='0 0 24 24' boxSize={8}>
+                            <path fill='white' d='M8 5v14l11-7z' />
                           </Icon>
                         )
                       }
                       onClick={onPlayPause}
-                      size="lg"
-                      bg="transparent"
-                      border="2px solid white"
-                      borderRadius="full"
+                      size='lg'
+                      bg='transparent'
+                      border='2px solid white'
+                      borderRadius='full'
                       _hover={{ bg: 'whiteAlpha.300' }}
                       isDisabled={!isDefaultMode}
                       opacity={!isDefaultMode ? 0.5 : 1}
@@ -161,17 +154,17 @@ function JukeboxArea({
                     />
 
                     <IconButton
-                      aria-label="Skip Forward"
+                      aria-label='Skip Forward'
                       icon={
-                        <Icon viewBox="0 0 24 24" boxSize={8}>
-                          <path fill="white" d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z" />
+                        <Icon viewBox='0 0 24 24' boxSize={8}>
+                          <path fill='white' d='M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z' />
                         </Icon>
                       }
                       onClick={onSkip}
-                      size="lg"
-                      bg="transparent"
-                      border="2px solid white"
-                      borderRadius="full"
+                      size='lg'
+                      bg='transparent'
+                      border='2px solid white'
+                      borderRadius='full'
                       _hover={{ bg: 'whiteAlpha.300' }}
                       isDisabled={!isDefaultMode}
                       opacity={!isDefaultMode ? 0.5 : 1}
@@ -180,17 +173,17 @@ function JukeboxArea({
                   </HStack>
 
                   {/* Progress Bar */}
-                  <HStack width="100%" spacing={4}>
-                    <Text fontSize="md" color="white">
+                  <HStack width='100%' spacing={4}>
+                    <Text fontSize='md' color='white'>
                       {formatTime(currentTime)}
                     </Text>
                     <Slider value={currentTime} min={0} max={duration} onChange={onSeek}>
-                      <SliderTrack bg="whiteAlpha.500">
-                        <SliderFilledTrack bg="white" />
+                      <SliderTrack bg='whiteAlpha.500'>
+                        <SliderFilledTrack bg='white' />
                       </SliderTrack>
-                      <SliderThumb boxSize={4} bg="white" />
+                      <SliderThumb boxSize={4} bg='white' />
                     </Slider>
-                    <Text fontSize="md" color="white">
+                    <Text fontSize='md' color='white'>
                       {formatTime(duration)}
                     </Text>
                   </HStack>
@@ -202,8 +195,8 @@ function JukeboxArea({
       </Box>
 
       {/* Additional Info */}
-      <Text fontSize="xs" color="gray.500" textAlign="center">
-        Toggle switch to listen to town's default music or join the town's community playlist
+      <Text fontSize='xs' color='gray.500' textAlign='center'>
+        {"Toggle switch to listen to town's default music or join the town's community playlist"}
       </Text>
     </VStack>
   );
@@ -212,33 +205,31 @@ function JukeboxArea({
 export function SkipVoteButton({ visible, onConfirm, onCancel }: SkipVoteButtonProps) {
   return (
     <Box
-      position="fixed"
-      bottom="16px"
-      left="20px"
+      position='fixed'
+      bottom='16px'
+      left='20px'
       zIndex={1100}
       display={visible ? 'flex' : 'none'}
-      bg="white"
-      border="1px solid #E4E7E9"
-      borderRadius="12px"
-      boxShadow="md"
-      px="12px"
-      py="10px"
-      alignItems="center"
-      gap="10px">
-      <Text fontWeight="semibold">Skip song?</Text>
-      <HStack spacing="8px">
-        <Button size="sm" onClick={onConfirm}>
+      bg='white'
+      border='1px solid #E4E7E9'
+      borderRadius='12px'
+      boxShadow='md'
+      px='12px'
+      py='10px'
+      alignItems='center'
+      gap='10px'>
+      <Text fontWeight='semibold'>Skip song?</Text>
+      <HStack spacing='8px'>
+        <Button size='sm' onClick={onConfirm}>
           Confirm
         </Button>
-        <Button size="sm" variant="outline" onClick={onCancel}>
+        <Button size='sm' variant='outline' onClick={onCancel}>
           Cancel
         </Button>
       </HStack>
     </Box>
   );
 }
-
-
 
 /**
  * JukeboxAreaWrapper
@@ -285,13 +276,12 @@ export function SkipVoteButton({ visible, onConfirm, onCancel }: SkipVoteButtonP
  * @returns {JSX.Element} The full jukebox UI and audio controller
  */
 
-
 export default function JukeboxAreaWrapper(): JSX.Element {
   const jukeboxArea = useInteractable<JukeboxAreaInteractable>('jukeboxArea');
   const townController = useTownController();
 
   // Audio state - lives here so it persists when modal closes
-  const { audioRef } = useAudio()
+  const { audioRef } = useAudio();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -382,10 +372,9 @@ export default function JukeboxAreaWrapper(): JSX.Element {
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onEnded={() => setIsPlaying(false)}
-        /> 
-      
-      
-        <Modal isOpen onClose={closeModal} closeOnOverlayClick={false} size="xl">
+        />
+
+        <Modal isOpen onClose={closeModal} closeOnOverlayClick={false} size='xl'>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>{jukeboxArea.name}</ModalHeader>

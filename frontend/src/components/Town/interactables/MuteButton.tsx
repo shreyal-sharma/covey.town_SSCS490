@@ -24,7 +24,7 @@ const VolumeMuteIcon = () => (
 );
 
 export default function MuteButton(): JSX.Element {
-  const { audioRef } = useAudio(); 
+  const { audioRef } = useAudio();
   const [isMuted, setIsMuted] = useState(false);
 
   const handleMuteToggle = () => {
