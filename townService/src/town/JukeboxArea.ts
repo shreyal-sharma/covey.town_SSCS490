@@ -11,12 +11,23 @@ import {
 import InteractableArea from './InteractableArea';
 import InvalidParametersError from '../lib/InvalidParametersError';
 
+/*
+ * We do this in order to remove the circular dependency that would arise from
+ * simply importing and storing a Town object in JukeboxArea.
+ * This also makes testing simpler.
+ */
+export interface HasPlayerCount {
+  playerCount(): number;
+}
+
 export default class JukeboxArea extends InteractableArea {
   public songQueue: Song[];
 
   public skipVotes: number;
 
   private _songEndTimeout: NodeJS.Timeout | undefined;
+
+  private _town: HasPlayerCount;
 
   /**
    * Creates a new JukeboxArea.
@@ -29,10 +40,13 @@ export default class JukeboxArea extends InteractableArea {
     { songQueue, skipVotes, id }: Omit<JukeboxAreaModel, 'type'>,
     coordinates: BoundingBox,
     townEmitter: TownEmitter,
+    town: HasPlayerCount,
   ) {
     super(id, coordinates, townEmitter);
     this.songQueue = songQueue;
     this.skipVotes = skipVotes;
+    this._town = town;
+
     this._periodicEmitAreaChanged();
   }
 
@@ -60,6 +74,7 @@ export default class JukeboxArea extends InteractableArea {
   public static fromMapObject(
     mapObject: ITiledMapObject,
     broadcastEmitter: TownEmitter,
+    town: HasPlayerCount,
   ): JukeboxArea {
     const { name, width, height } = mapObject;
     if (!width || !height) {
@@ -70,6 +85,7 @@ export default class JukeboxArea extends InteractableArea {
       { id: name, occupants: [], songQueue: [], skipVotes: 0 },
       rect,
       broadcastEmitter,
+      town,
     );
   }
 
@@ -160,16 +176,21 @@ export default class JukeboxArea extends InteractableArea {
   }
 
   /**
-   * Handles an incoming vote, whether from an InitiateSongSkip or a VoteForSongSkip
+   * Handles an incoming vote, whether from an InitiateSongSkip or a
+   * VoteForSongSkip.
    */
   private _handleVote() {
     if (this.songQueue.length === 0) {
       return;
     }
     this.skipVotes += 1;
-    // TODO: investigate more intelligent voting logic (consider the number
-    // of people in the town)
-    if (this.skipVotes >= 3) {
+
+    const playerCount = this._town.playerCount();
+    // If at least half the players vote to skip the song, then we should skip
+    // the song. This handles the case of one player correctly, where only they
+    // need to agree to skip the song. We may want to choose a different
+    // threshold in the feature.
+    if (this.skipVotes > Math.floor(playerCount / 2)) {
       // We need to cancel the current song end timeout, because it will
       // occur during the next song.
       clearTimeout(this._songEndTimeout);
