@@ -20,10 +20,9 @@ import {
   SliderThumb,
 } from '@chakra-ui/react';
 import useTownController from '../../../hooks/useTownController';
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { InteractableID } from '../../../types/CoveyTownSocket';
-import { useInteractable, useInteractableAreaController } from '../../../classes/TownController';
-import JukeboxAreaController from '../../../classes/interactable/JukeboxAreaController';
+import { useInteractable } from '../../../classes/TownController';
 import JukeboxAreaInteractable from './JukeboxArea';
 import { useAudio } from '../../../contexts/AudioContext';
 
@@ -48,7 +47,6 @@ type JukeboxAreaProps = {
 };
 
 function JukeboxArea({
-  interactableID,
   isPlaying,
   currentTime,
   duration,
@@ -59,10 +57,6 @@ function JukeboxArea({
   onSeek,
   onModeToggle,
 }: JukeboxAreaProps): JSX.Element {
-  const jukeboxAreaController =
-    useInteractableAreaController<JukeboxAreaController>(interactableID);
-  const townController = useTownController();
-
   // Helper to format time in mm:ss
   // Used in progress bar display to display current time and duration of song
   const formatTime = (seconds: number): string => {
@@ -293,13 +287,13 @@ export default function JukeboxAreaWrapper(): JSX.Element {
     if (audioRef.current) {
       setCurrentTime(Math.floor(audioRef.current.currentTime));
     }
-  }, []);
+  }, [audioRef]);
 
   const handleLoadedMetadata = useCallback(() => {
     if (audioRef.current) {
       setDuration(Math.floor(audioRef.current.duration));
     }
-  }, []);
+  }, [audioRef]);
 
   // Mode toggle
   const handleModeToggle = useCallback(() => {
@@ -322,7 +316,7 @@ export default function JukeboxAreaWrapper(): JSX.Element {
     setCurrentTime(0);
     setDuration(0);
     setCurrentSong(newMode ? 'Default Background Music' : 'No songs in playlist');
-  }, [isDefaultMode]);
+  }, [isDefaultMode, audioRef]);
 
   // Playback controls
   const handlePlayPause = useCallback(() => {
@@ -336,7 +330,7 @@ export default function JukeboxAreaWrapper(): JSX.Element {
     if (isPlaying) audioRef.current.pause();
     else audioRef.current.play();
     setIsPlaying(!isPlaying);
-  }, [isPlaying, isDefaultMode]);
+  }, [isPlaying, isDefaultMode, audioRef]);
 
   const handleSkip = useCallback(() => {
     if (!audioRef.current) return;
@@ -346,14 +340,17 @@ export default function JukeboxAreaWrapper(): JSX.Element {
 
     audioRef.current.currentTime = 0;
     setCurrentTime(0);
-  }, [isDefaultMode]);
+  }, [isDefaultMode, audioRef]);
 
-  const handleSeek = useCallback((value: number) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = value;
-      setCurrentTime(value);
-    }
-  }, []);
+  const handleSeek = useCallback(
+    (value: number) => {
+      if (audioRef.current) {
+        audioRef.current.currentTime = value;
+        setCurrentTime(value);
+      }
+    },
+    [audioRef],
+  );
 
   const closeModal = useCallback(() => {
     if (jukeboxArea) {
