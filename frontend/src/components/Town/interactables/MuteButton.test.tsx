@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import MuteButton from './MuteButton';
 import React from 'react';
@@ -9,7 +9,7 @@ const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <ChakraProvider>
       <AudioProvider>{component}</AudioProvider>
-    </ChakraProvider>
+    </ChakraProvider>,
   );
 };
 
