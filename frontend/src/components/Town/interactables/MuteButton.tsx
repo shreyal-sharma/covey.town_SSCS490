@@ -1,5 +1,6 @@
 import { IconButton } from '@chakra-ui/react';
 import React, { useState } from 'react';
+import { useAudio } from '../../../contexts/AudioContext';
 
 // Inline SVG icons as components
 
@@ -23,13 +24,16 @@ const VolumeMuteIcon = () => (
 );
 
 export default function MuteButton(): JSX.Element {
+  const { audioRef } = useAudio(); 
   const [isMuted, setIsMuted] = useState(false);
 
   const handleMuteToggle = () => {
-    setIsMuted(!isMuted);
-    console.log('Mute button clicked. Muted:', !isMuted);
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+      console.log('Mute button clicked. Muted:', !isMuted);
+    }
   };
-
   return (
     <IconButton
       icon={isMuted ? <VolumeMuteIcon /> : <VolumeUpIcon />}
