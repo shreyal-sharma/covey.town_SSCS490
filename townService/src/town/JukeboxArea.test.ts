@@ -1,6 +1,6 @@
 import { mock, mockClear } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
-import JukeboxArea from './JukeboxArea';
+import JukeboxArea, { HasPlayerCount } from './JukeboxArea';
 import {
   JukeboxArea as JukeboxAreaModel,
   PlayerID,
@@ -9,6 +9,7 @@ import {
 } from '../types/CoveyTownSocket';
 import Player from '../lib/Player';
 import { getLastEmittedEvent } from '../TestUtils';
+import Town from './Town';
 
 jest.useFakeTimers();
 jest.spyOn(global, 'setTimeout');
@@ -17,6 +18,13 @@ describe('JukeboxArea', () => {
   const testAreaBox = { x: 100, y: 100, width: 100, height: 100 };
   let testArea: JukeboxArea;
   const townEmitter = mock<TownEmitter>();
+  // This indirection means our mock town implementation captures a reference 
+  // to the object, meaning we can update the stored number elsewhere and have 
+  // it update there.
+  const playerCountObject = { playerCount: 0 };
+  const town: HasPlayerCount = {
+    playerCount: () => playerCountObject.playerCount,
+  };
   let newPlayer: Player;
   const id = nanoid();
   const songQueue: Song[] = [];
@@ -33,8 +41,15 @@ describe('JukeboxArea', () => {
 
   beforeEach(() => {
     mockClear(townEmitter);
-    testArea = new JukeboxArea({ id, songQueue, skipVotes, occupants }, testAreaBox, townEmitter);
-    newPlayer = new Player(nanoid(), mock<TownEmitter>());
+    playerCountObject.playerCount = 0;
+    testArea = new JukeboxArea(
+      { id, songQueue, skipVotes, occupants },
+      testAreaBox,
+      townEmitter,
+      town,
+    );
+    newPlayer = new Player(nanoid(), townEmitter);
+    playerCountObject.playerCount = 1;
     testArea.add(newPlayer);
   });
 
@@ -90,6 +105,7 @@ describe('JukeboxArea', () => {
           JukeboxArea.fromMapObject(
             { id: 1, name: nanoid(), visible: true, x: 0, y: 0 },
             townEmitter,
+            town,
           ),
         ).toThrowError();
       });
@@ -102,6 +118,7 @@ describe('JukeboxArea', () => {
         const val = JukeboxArea.fromMapObject(
           { x, y, width, height, name, id: 10, visible: true },
           townEmitter,
+          town,
         );
         expect(val.boundingBox).toEqual({ x, y, width, height });
         expect(val.id).toEqual(name);
@@ -214,6 +231,8 @@ describe('JukeboxArea', () => {
     });
 
     it('increments the vote count when a song is playing', () => {
+      // we set this high enough that we avoid actually skipping the song
+      playerCountObject.playerCount = 10;
       // @ts-expect-error (access to private method)
       testArea._queueSong(testSong);
       expect(testArea.skipVotes).toBe(0);
@@ -227,7 +246,9 @@ describe('JukeboxArea', () => {
       expect(testArea.skipVotes).toBe(2);
     });
 
-    it('removes the current song from the queue if three votes are reached', () => {
+    it('removes the current song from the queue if three votes are reached with four players in the town', () => {
+      // we set this high enough that we avoid actually skipping the song
+      playerCountObject.playerCount = 4;
       // @ts-expect-error (access to private method)
       testArea._queueSong(testSong);
       // @ts-expect-error (access to private method)
@@ -237,11 +258,42 @@ describe('JukeboxArea', () => {
 
       // @ts-expect-error (access to private method)
       testArea._handleVote();
-      // @ts-expect-error (access to private method)
-      testArea._handleVote();
-      // @ts-expect-error (access to private method)
-      testArea._handleVote();
+      expect(testArea.songQueue).toHaveLength(songQueueLength);
+      expect(testArea.skipVotes).toBe(1);
 
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+      expect(testArea.songQueue).toHaveLength(songQueueLength);
+      expect(testArea.skipVotes).toBe(2);
+
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+      expect(testArea.songQueue).toHaveLength(songQueueLength - 1);
+      expect(testArea.skipVotes).toBe(0);
+    });
+
+    it('removes the current song from the queue if three votes are reached with five players in the town', () => {
+      // we set this high enough that we avoid actually skipping the song
+      playerCountObject.playerCount = 5;
+      // @ts-expect-error (access to private method)
+      testArea._queueSong(testSong);
+      // @ts-expect-error (access to private method)
+      testArea._queueSong(testSong);
+
+      const songQueueLength = testArea.songQueue.length;
+
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+      expect(testArea.songQueue).toHaveLength(songQueueLength);
+      expect(testArea.skipVotes).toBe(1);
+
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
+      expect(testArea.songQueue).toHaveLength(songQueueLength);
+      expect(testArea.skipVotes).toBe(2);
+
+      // @ts-expect-error (access to private method)
+      testArea._handleVote();
       expect(testArea.songQueue).toHaveLength(songQueueLength - 1);
       expect(testArea.skipVotes).toBe(0);
     });
