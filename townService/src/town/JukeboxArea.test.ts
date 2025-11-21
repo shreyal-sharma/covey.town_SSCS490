@@ -9,7 +9,6 @@ import {
 } from '../types/CoveyTownSocket';
 import Player from '../lib/Player';
 import { getLastEmittedEvent } from '../TestUtils';
-import Town from './Town';
 
 jest.useFakeTimers();
 jest.spyOn(global, 'setTimeout');
@@ -18,8 +17,8 @@ describe('JukeboxArea', () => {
   const testAreaBox = { x: 100, y: 100, width: 100, height: 100 };
   let testArea: JukeboxArea;
   const townEmitter = mock<TownEmitter>();
-  // This indirection means our mock town implementation captures a reference 
-  // to the object, meaning we can update the stored number elsewhere and have 
+  // This indirection means our mock town implementation captures a reference
+  // to the object, meaning we can update the stored number elsewhere and have
   // it update there.
   const playerCountObject = { playerCount: 0 };
   const town: HasPlayerCount = {
